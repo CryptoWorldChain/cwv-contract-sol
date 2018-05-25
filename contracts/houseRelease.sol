@@ -6,7 +6,7 @@ pragma solidity ^0.4.21;
 contract houseRelease{
 
   //超级账户地址
-  address owner = "0xca35b7d915458ef540ade6068dfe2f44e8fa733c";
+  address owner = 0x14723a09acff6d2a60dcdf7aa4aff308fddc160c;
 
   //721token
   string soymol;
@@ -20,8 +20,9 @@ contract houseRelease{
   string total;
 
   /*function houseRelease() public{
-      owner = msg.sender;
-  */
+      //owner = msg.sender;
+      owner = 0x14723a09acff6d2a60dcdf7aa4aff308fddc160c;
+  }*/
 
 
   function createHouse(string _soymol,string _name,string _code,string _index,string _total) public{
