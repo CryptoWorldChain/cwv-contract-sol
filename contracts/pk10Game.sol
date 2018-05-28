@@ -42,7 +42,7 @@ library pk10Game{
 
 
 
-  function divisionMoney(string infoLevel) internal returns(string){
+  function divisionMoney(string infoLevel) internal pure returns(string){
     string memory prizeMoney;
     //普通投注
     if(stringsEqual("1",infoLevel)){
@@ -175,7 +175,7 @@ library pk10Game{
   }
 
   //获取奖等及奖金
-  function divisionTransfer(string infoName) internal returns (string){
+  function divisionTransfer(string infoName) internal pure returns (string){
     string memory prizeLevel;
     //普通投注
     if(stringsEqual("10_10",infoName)){
@@ -349,102 +349,37 @@ library pk10Game{
   计算奖等并返奖
   */
 
-  function calcPrizeLevelStruct (BettingValue memory bettingValue,WinNumValue winNumValue) internal returns(string){
+  function calcPrizeLevelStruct (BettingValue memory bettingValue,WinNumValue winNumValue) internal pure returns(string){
 
     // 根据中奖号码算奖 01|02|03|
     //string memory winnumber = winCode;
     //玩法
     string memory bettypeArr = bettingValue.playtype;
         //投注方式
-    string memory chipintypeArr = bettingValue.chipintype;
+    //string memory chipintypeArr = bettingValue.chipintype;
         //投注号码(多个以,分隔)
     //string memory wagerDataArr = wagerdata;
         //投注号码个数(多个以,分隔)
-    string memory spotsArr = "";
+    //string memory spotsArr = "";
 
     string memory divisionName0;
 
     //倍数在
-    string memory betmultirArr = bettingValue.multiple;
+    //string memory betmultirArr = bettingValue.multiple;
     //4拖拉机投注 1  01|02|03*1
     //5猜奇偶  全奇1 01|02|03*1  全偶2 01|02|03*1
     //6猜大小  猜大1 01|02|03*1  猜小2  01|02|03*1
     if (stringsEqual("4",bettypeArr) || stringsEqual("5",bettypeArr)|| stringsEqual("6",bettypeArr)) {
       //divisionName0 = getDivisionName("", winnumber, bettypeArr, chipintypeArr);
       divisionName0 = getDivisionName(bettingValue,winNumValue);
-    } else {
-      //2普通投注  2 08|03|02|10|06|04|09|07|05|01*5
-      //1精确投注  1精确投注 03|02*1   2复选 03|02*1   3组选 03|02*1
-      //3位置投注  1位置一 03*1 2位置二 03|04*1
-      //7和数     1 和数1 6*1
-      divisionName0 = getDivisionName(bettingValue,winNumValue);
     }
 
-    if(stringsEqual(divisionName0,"") && stringsEqual(bettingValue.bettBool,"1")){
 
-      // 获取奖等级别
-      if(!stringsEqual("3",chipintypeArr) && (stringsEqual("1",bettypeArr) || stringsEqual("2",bettypeArr))){
-        uint wonCount1 = wonCount(bettingValue,winNumValue);// 计算中奖号码个数
-        divisionName0 = strConcat(spotsArr,"_",string(toBytes(wonCount1)),"","");
-      }
-
-      // 精选
-      if (stringsEqual("1",bettypeArr)&&stringsEqual("1",chipintypeArr)) {
-        divisionName0 = strConcat("e_",divisionName0,"","","");
-      }
-
-      // 复选
-      if (stringsEqual("1",bettypeArr)&&stringsEqual("2",chipintypeArr)) {
-        divisionName0 = strConcat("c_",divisionName0,"","","");
-      }
-    }
     return divisionName0;
   }
 
 
-  /*
-  计算中奖号码个数
-  */
-  function wonCount(BettingValue bettingValue,WinNumValue winNumValue) internal returns (uint){
 
-  		uint wonCount0 = 0;
-      if (stringsEqual("2",bettingValue.playtype) || (stringsEqual("1",bettingValue.playtype)&&stringsEqual("1",bettingValue.chipintype))) {
-  			wonCount0 = wonCount2Or1And1(bettingValue,winNumValue);
-  		} else {
-  			wonCount0 = wonCountZero(bettingValue,winNumValue);
-  		}
-  		return wonCount0;
-  }
-  function wonCount2Or1And1(BettingValue bettingValue,WinNumValue winNumValue) internal returns (uint){
-
-    string[] memory wagerdataArray = bettingValue.bettingArray;
-
-    string[] memory winnerNumberArray = winNumValue.winArray;
-
-    uint wonCount0 = 0;
-    for (uint i = 0; i < 10; i++) {
-      if (parseInt(wagerdataArray[i]) == parseInt(winnerNumberArray[i])) {
-        wonCount0++;
-      }
-    }
-    return wonCount0;
-  }
-
-  function wonCountZero(BettingValue bettingValue,WinNumValue winNumValue) internal returns (uint){
-    string[] memory wagerdataArray = bettingValue.bettingArray;
-
-    string[] memory winnerNumberArray = winNumValue.winArray;
-
-    uint wonCount0 = 0;
-    for(uint k=0; k<wagerdataArray.length; k++){
-      for(uint j=0; j<wagerdataArray.length; j++){
-        if(parseInt(wagerdataArray[k])==parseInt(winnerNumberArray[j])){
-          wonCount0++;
-        }
-      }
-    }
-    return wonCount0;
-  }
   /*
   计算是否中奖
   wagerdata		投注号码
@@ -452,17 +387,9 @@ library pk10Game{
   playtype		玩法
   chipintype		类型
   */
-  function getDivisionName(BettingValue bettingValue,WinNumValue winNumValue) internal returns (string){
+  function getDivisionName(BettingValue bettingValue,WinNumValue winNumValue) internal pure returns (string){
     string memory divisionName;
-    //精确投注   组选
-    if(stringsEqual("1",bettingValue.playtype)&&stringsEqual("3",bettingValue.playtype)){
-      //divisionName = computer1(bettingValue,winNumValue);
-    }else
-
-    if(stringsEqual("3",bettingValue.playtype)){
-      //位置投注
-      //divisionName = computer3(bettingValue,winNumValue);
-    }else if(stringsEqual("4",bettingValue.playtype)&&stringsEqual("1",bettingValue.chipintype)){
+    if(stringsEqual("4",bettingValue.playtype)&&stringsEqual("1",bettingValue.chipintype)){
       //拖拉机投注
       divisionName = computer4And1(bettingValue,winNumValue);
     }else if(stringsEqual("5",bettingValue.playtype)){
@@ -471,93 +398,15 @@ library pk10Game{
     }else if(stringsEqual("6",bettingValue.playtype)){
       //猜大小
       divisionName = computer6(bettingValue,winNumValue);
-    }else if(stringsEqual("7",bettingValue.playtype)&&stringsEqual("1",bettingValue.chipintype)){
-      //和数
-      divisionName = computer7And1(bettingValue,winNumValue);
     }
     return divisionName;
 
   }
 
-  //精确投注   组选
-  /*function computer1(BettingValue bettingValue,WinNumValue winNumValue)internal returns (string){
-      string memory divisionNameInfo;
-      //var delim1 = ",".toSlice();
-      string[] memory wagerdataArray = bettingValue.bettingArray;
 
-      string[] memory winnerNumberArray = winNumValue.winArray;
-
-      uint kk = 0;
-      string memory winNum0;
-      for(kk=0;kk<wagerdataArray.length;kk++){
-        winNum0 = strConcat(winNum0,"#",winnerNumberArray[kk],"#","");
-      }
-      bool isWin = true;
-      //uint wagerdatalength = wagerdataArray.length;
-      for( kk=0;kk<wagerdataArray.length;kk++){
-        string memory wagerNum0;
-        if (nameLength(wagerdataArray[kk]) == 1) {
-          wagerNum0 = strConcat(wagerNum0,"#0",wagerdataArray[kk],"#","");
-        } else {
-          wagerNum0 = strConcat(wagerNum0,"#",wagerdataArray[kk],"#","");
-        }
-        var wagerNum0Str = wagerNum0.toSlice();
-        var winNum0Str = winNum0.toSlice();
-        var tempStr = winNum0Str.until(winNum0Str.copy().find(wagerNum0Str).beyond(wagerNum0Str));
-        if(stringsEqual("",tempStr.toString())){
-          isWin = false;
-          break;
-        }
-      }
-      if (isWin) {
-        //// playtype_chipintype_中奖号码个数
-        divisionNameInfo = strConcat(bettingValue.playtype,"_",bettingValue.chipintype,"_",string(toBytes(wagerdataArray.length)));
-      }else{
-        divisionNameInfo = "";
-      }
-      return divisionNameInfo;
-  }*/
-  /*function computer3(BettingValue bettingValue,WinNumValue winNumValue)internal returns (string){
-      string memory divisionName3;
-      //var delim1 = ",".toSlice();
-      string[] memory wagerdataArray = bettingValue.bettingArray;
-      string[] memory winnerNumberArray = winNumValue.winArray;
-      //uint wagerdatalength = wagerdataArray.length;
-      string memory winNum0;
-      uint ll = 0;
-      for(ll=0;ll<wagerdataArray.length;ll++){
-        winNum0 = strConcat(winNum0,"#",winnerNumberArray[ll],"#","");
-      }
-
-      string memory winNum1 = strConcat("#",winnerNumberArray[0],"#",winnerNumberArray[1],"#");
-      // 一至三号位置的开将号码
-      winNum1 = strConcat(winNum1,winnerNumberArray[2],"#","","");
-  		//uint wagerdatalength1 = wagerdataArray.length;// 投注号码个数 1-2个投注号码
-  		bool isWin1 = true;
-  		for (ll = 0; ll < wagerdataArray.length; ll++) {
-  			string memory wagerNum1;
-  			if (nameLength(wagerdataArray[ll]) == 1) {
-  				wagerNum1 = strConcat(wagerNum1,"#0", wagerdataArray[ll] , "#","");
-  			} else {
-  				wagerNum1 = strConcat(wagerNum1,"#" , wagerdataArray[ll] , "#","");
-  			}
-        var wagerNum1Str = wagerNum1.toSlice();
-        var winNum1Str = winNum1.toSlice();
-        var tempStr1 = winNum1Str.until(winNum1Str.copy().find(wagerNum1Str).beyond(wagerNum1Str));
-        if(stringsEqual("",tempStr1.toString())){
-  				isWin1 = false;
-  				break;
-  			}
-  		}
-  		if (isWin1) {
-  			//playtype_chipintype_中奖号码个数
-  			divisionName3 = strConcat(bettingValue.playtype , "_" , bettingValue.chipintype , "_" , string(toBytes(wagerdataArray.length)));
-  		}
-      return divisionName3;
-    }*/
-  function computer4And1(BettingValue bettingValue,WinNumValue winNumValue)  internal returns (string){
+  function computer4And1(BettingValue bettingValue,WinNumValue winNumValue)  internal pure returns (string){
     string memory divisionName4;
-    string[] memory wagerdataArray = bettingValue.bettingArray;
+    //string[] memory wagerdataArray = bettingValue.bettingArray;
 
     uint n1 = parseInt(winNumValue.winOne);
     uint n2 = parseInt(winNumValue.winTwo);
@@ -568,10 +417,10 @@ library pk10Game{
     }
     return divisionName4;
   }
-  function computer5(BettingValue bettingValue,WinNumValue winNumValue)  internal returns (string){
+  function computer5(BettingValue bettingValue,WinNumValue winNumValue)  internal pure returns (string){
     string memory divisionName5;
 
-    string[] memory wagerdataArray = bettingValue.bettingArray;
+    //string[] memory wagerdataArray = bettingValue.bettingArray;
 
     uint n11 = parseInt(winNumValue.winOne);
     uint n21 = parseInt(winNumValue.winTwo);
@@ -585,10 +434,10 @@ library pk10Game{
     }
     return divisionName5;
   }
-  function computer6(BettingValue bettingValue,WinNumValue winNumValue)  internal returns (string){
+  function computer6(BettingValue bettingValue,WinNumValue winNumValue)  internal pure returns (string){
     string memory divisionName6;
 
-    string[] memory wagerdataArray = bettingValue.bettingArray;
+    //string[] memory wagerdataArray = bettingValue.bettingArray;
 
     uint n12 = parseInt(winNumValue.winOne);
     uint n22 = parseInt(winNumValue.winTwo);
@@ -604,42 +453,19 @@ library pk10Game{
     return divisionName6;
   }
 
-  function computer7And1(BettingValue bettingValue,WinNumValue winNumValue)  internal returns (string){
-    string memory divisionName7and1;
-    string[] memory wagerdataArray1 = bettingValue.bettingArray;
-
-    uint n13 = parseInt(winNumValue.winOne);
-    uint n23 = parseInt(winNumValue.winTwo);
-    uint n33 = parseInt(winNumValue.winThree);
-    uint n9 = n13 + n23 + n33;
 
 
-    /*var delim2 = ",".toSlice();
-    var wagerdataStr22 = wagerdata.toSlice();
-    var wagerdataArray1 = new string[](wagerdataStr22.count(delim2) + 1);*/
-    string memory wagerNum3;
-    for(uint jj=0;jj<wagerdataArray1.length;jj++){
-      wagerNum3 = strConcat(wagerNum3,wagerdataArray1[jj],"","","");
-    }
-    uint wagerNum2 = parseInt(wagerNum3);
-    if (wagerNum2 == n9) {
-      // 和数
-      divisionName7and1 = strConcat(bettingValue.playtype , "_" , bettingValue.chipintype , "_" , string(toBytes(wagerNum2)));
-    }
-    return divisionName7and1;
-  }
-
-    function nameLength(string name) constant returns (uint) {
+    function nameLength(string name) internal pure returns (uint) {
 
         return bytes(name).length;
     }
   //字符串转整数
-  function parseInt(string _a) internal returns (uint) {
+  function parseInt(string _a) internal pure returns (uint) {
       return parseInt(_a, 0);
   }
 
   //字符串转整数
-  function parseInt(string _a, uint _b) internal returns (uint) {
+  function parseInt(string _a, uint _b) internal pure returns (uint) {
       bytes memory bresult = bytes(_a);
       uint mint = 0;
       bool decimals = false;
@@ -657,7 +483,7 @@ library pk10Game{
       return mint;
   }
   //字符串相等
-  function stringsEqual(string memory _a, string memory _b) internal returns (bool) {
+  function stringsEqual(string memory _a, string memory _b) internal pure returns (bool) {
   		bytes memory a = bytes(_a);
   		bytes memory b = bytes(_b);
   		if (a.length != b.length)
@@ -669,7 +495,7 @@ library pk10Game{
   		return true;
   	}
     //字符串连接
-    function strConcat(string _a, string _b, string _c, string _d, string _e) internal returns (string){
+    function strConcat(string _a, string _b, string _c, string _d, string _e) internal pure returns (string){
       bytes memory _ba = bytes(_a);
       bytes memory _bb = bytes(_b);
       bytes memory _bc = bytes(_c);
@@ -687,7 +513,7 @@ library pk10Game{
     }
 
     //数字转bytes
-    function toBytes(uint256 x)internal returns (bytes) {
+    function toBytes(uint256 x)internal pure returns (bytes) {
       bytes memory b = new bytes(32);
       assembly { mstore(add(b, 32), x) }
     }

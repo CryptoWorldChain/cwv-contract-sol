@@ -24,6 +24,7 @@ contract PrizePool{
         pools.push(poolEight);
         pools.push(poolNine);
         pools.push(poolTen);
+        //重新计算
         setPoolAmount();
   }
 
@@ -31,6 +32,16 @@ contract PrizePool{
   function changOwner(address modiAddr) public {
     require(msg.sender == owner);
     owner = modiAddr;
+  }
+  //扩展奖池
+  function poolEx(address newPool) public {
+    require(owner == msg.sender);
+    if(!checkAddress(newPool)){
+      pools.push(newPool);
+      //重新计算
+      setPoolAmount();
+    }
+
   }
 
   //获取每个账户的余额，并累加到奖池总金额中
@@ -45,14 +56,16 @@ contract PrizePool{
   function getPoolAmount() public returns(uint256){
     return poolAmount;
   }
-  //给奖池增加资金
+  /*//给奖池增加资金
   function setPoolMoney(address _addrMoney,uint256 _intMoney) public {
       require(owner == msg.sender);
       require(_intMoney>0);
 
       poolAmount = poolAmount + _intMoney;
       _addrMoney.transfer(_intMoney);
-  }
+      //重新计算
+      setPoolAmount();
+  }*/
 
   //检查地址是否存在
   function checkAddress(address _form) internal returns(bool){
@@ -67,11 +80,11 @@ contract PrizePool{
   }
 
   //转账给指定的奖池
-  function transferzMoney(address _form,address _to,uint256 _intMoney)public payable{
-    require(owner == msg.sender);
-    if(checkAddress(_form)){
-        _form.transfer(-_intMoney);
-        _to.transfer(_intMoney);
-    }
-  }
+ function transferzMoney(address _form,address _to,uint256 _intMoney)public payable{
+   //require(owner == msg.sender);
+   require(_intMoney>0);
+   if(checkAddress(_form)&&checkAddress(_to)){
+       _to.transfer(_intMoney);
+   }
+ }
 }

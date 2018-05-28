@@ -11,13 +11,13 @@ contract GamePlay {
 
 
 //用户投注信息
-struct userInfo{
+/*struct userInfo{
   //uint IndexValue;
   string period;//期号
   string betting;//投注信息
   uint256 winPrice;//中奖金额
   string winLevel;//中奖奖等   多笔用逗号分割
-}
+}*/
 
 
 //用户投注信息
@@ -46,6 +46,8 @@ string divisionNameInfo;
 uint actionStart;
 //结束时间
 uint auctionEnd;
+//是否算奖
+bool isComputerPrize = false;
 //开奖号码存储
 pk10Game.WinNumValue winNumValue;
 //设置合约创建者
@@ -140,9 +142,13 @@ function userBetting(string _strBet,string _period) public payable{
 
 //算奖
 function computerPrize() public payable{
+
+  //false表示没有算过奖
+  require(isComputerPrize==false);
   //不是创建合约用户，不能算奖
   require(owner==msg.sender);
   require(now >= auctionEnd);
+
   //require(gameCode);
   //计算
   //循环投注数组，判断是否中奖
@@ -155,15 +161,20 @@ function computerPrize() public payable{
           string memory divisionType = pk10Game.calcPrizeLevelStruct(tempUserInfo,winNumValue);
           string memory prizeLevel = pk10Game.divisionTransfer(divisionType);
           string memory prizeMoney0 = pk10Game.divisionMoney(prizeLevel);
+
           tempUser[n].level = prizeLevel;
           tempUser[n].money = prizeMoney0;
-          award = award + pk10Game.parseInt(prizeMoney0);
+          uint multiple = pk10Game.parseInt(tempUserInfo.multiple);
+          award = award + pk10Game.parseInt(prizeMoney0)*multiple;
       }
       //算奖同时返奖
       if(award == 0){
         tempaddr.transfer(award);
       }
   }
+
+  //算过奖后值为true
+  isComputerPrize = true;
 }
 
 }
