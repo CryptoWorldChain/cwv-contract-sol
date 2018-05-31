@@ -1,74 +1,42 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.22;
 
 contract BuyingSellingHouses{
-
-    //开始卖房时间 及受益人
-    address beneficiary;
-
-    //佣金地址
-    address commission;
-
-
-    //买入人地址
-    address buyMan;
-
-
-
-
-    uint public auctionStart;
-    uint256 public sellPrice;
-    //佣金价格
-    uint256 public commissionPrice;
-    string public houseid;
-
-    //房屋已成交
-    bool ended = false;
-
-    // 买入调用事件    买入者地址    买入价格
-    event BuyHouse(address winner,uint amount);
-    function BuyingSellingHouses (string _houseid,uint256 _sellPrice,
-      uint256 _commissionPrice,address _commission)  public {
-      beneficiary = msg.sender;
-      houseid = _houseid;
-      sellPrice = _sellPrice;
-      commissionPrice = _commissionPrice;
-      commission = _commission;
+    uint256 houseTotalNum = 1000000;
+    uint256 houseSign = 0;
+    struct HouseInfo{
+      uint256 sellPrice;
+      address sellAddr;
+      uint256 commPrice;
+      address commAddr;
+      address buyAddr;
+      bool isSell;
     }
-    /* //卖出对象     卖出人地址   卖出价格
-    function BuyingSellingHouses (address _beneficiary,uint _amount)  public {
-        beneficiary = _beneficiary;
-        auctionStart = now;
-        amountHouse = _amount;
-    } */
-    //设置卖出信息
-    /* function setSell(address _commission) public {
-      require(beneficiary == msg.sender);
-      commission = _commission;
-    } */
+    mapping(string => HouseInfo) houseSellInfo;
+    event BuyHouse(address winner,uint256 amount,bool isSells,string houseid);
+    event HouseTotal(uint256 houseSigns);
+    function sellHouse(string _houseid,uint256 _sellPrice,uint256 _commissionPrice,address _commission) public {
+      require(houseSign<houseTotalNum,"1");
+      houseSellInfo[_houseid] = HouseInfo(_sellPrice,msg.sender,_commissionPrice,_commission,_commission,false);
+      houseSign = houseSign +1;
+      emit HouseTotal(houseSign);
+    }
 
+    function buyHouse(string _houseid) public payable {
 
-    /* //卖出信息    _houseid 房屋id  _sellPrice 卖出价格
-    function sellHouse(string _houseid,uint128 _sellPrice,uint128 _commissionPrice) public {
-      require(beneficiary == msg.sender);
-      houseid = _houseid;
-      sellPrice = _sellPrice;
-      commissionPrice = _commissionPrice;
-    } */
+        uint256 tempSellPrice = houseSellInfo[_houseid].sellPrice;
+        address tempSellAddr = houseSellInfo[_houseid].sellAddr;
+        bool tempIsSell = houseSellInfo[_houseid].isSell;
+        require(tempSellAddr != msg.sender,"2");
+        require(msg.sender.balance > tempSellPrice,"3");
+        require(!tempIsSell,"4");
 
-    //买入
-    function buyHouse() public {
-        require(beneficiary != msg.sender);
-        require(msg.sender.balance > sellPrice);
-        require(!ended);
-        buyMan = msg.sender;
+        houseSellInfo[_houseid].buyAddr = msg.sender;
 
-        emit BuyHouse(msg.sender,sellPrice);
-        //收千分之一的佣金
-        //commissionPrice = sellPrice * 1/1000;
-        uint256 tempInt =  sellPrice - commissionPrice;
-        beneficiary.transfer(tempInt);
-        commission.transfer(commissionPrice);
-
-        ended = true;
+        uint256 tempCommissionPrice = houseSellInfo[_houseid].commPrice;
+        uint256 tempTruePrice =  tempSellPrice - tempCommissionPrice;
+        tempSellAddr.transfer(tempTruePrice);
+        houseSellInfo[_houseid].commAddr.transfer(tempCommissionPrice);
+        houseSellInfo[_houseid].isSell = true;
+        emit BuyHouse(msg.sender,tempSellPrice,houseSellInfo[_houseid].isSell,_houseid);
     }
 }
