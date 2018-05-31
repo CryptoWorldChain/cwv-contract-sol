@@ -10,25 +10,32 @@ contract BuyingSellingHouses{
       address commAddr;
       address buyAddr;
       bool isSell;
+      bool isCancel;
     }
     mapping(string => HouseInfo) houseSellInfo;
     event BuyHouse(address winner,uint256 amount,bool isSells,string houseid);
     event HouseTotal(uint256 houseSigns);
     function sellHouse(string _houseid,uint256 _sellPrice,uint256 _commissionPrice,address _commission) public {
       require(houseSign<houseTotalNum,"1");
-      houseSellInfo[_houseid] = HouseInfo(_sellPrice,msg.sender,_commissionPrice,_commission,_commission,false);
+      houseSellInfo[_houseid] = HouseInfo(_sellPrice,msg.sender,_commissionPrice,_commission,_commission,false,false);
       houseSign = houseSign +1;
       emit HouseTotal(houseSign);
     }
-
+    function cancelHouse(string _houseid) public {
+      bool tempIsSell = houseSellInfo[_houseid].isSell;
+      require(!tempIsSell,"2");
+      houseSellInfo[_houseid].isCancel = true;
+    }
     function buyHouse(string _houseid) public payable {
 
         uint256 tempSellPrice = houseSellInfo[_houseid].sellPrice;
         address tempSellAddr = houseSellInfo[_houseid].sellAddr;
         bool tempIsSell = houseSellInfo[_houseid].isSell;
-        require(tempSellAddr != msg.sender,"2");
-        require(msg.sender.balance > tempSellPrice,"3");
-        require(!tempIsSell,"4");
+        bool tempIsCancel = houseSellInfo[_houseid].isCancel;
+        require(tempSellAddr != msg.sender,"3");
+        require(msg.sender.balance > tempSellPrice,"4");
+        require(!tempIsSell,"5");
+        require(!tempIsCancel,"6");
 
         houseSellInfo[_houseid].buyAddr = msg.sender;
 
