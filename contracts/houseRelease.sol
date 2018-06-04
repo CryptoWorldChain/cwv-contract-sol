@@ -1,15 +1,15 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.22;
 
 /*
 721token发行
 */
-contract houseRelease{
+contract HouseRelease{
 
   //超级账户地址
-  address owner = 0x14723a09acff6d2a60dcdf7aa4aff308fddc160c;
+  address owner;
 
   //721token
-  string soymol;
+  string symol;
   //名称
   string name;
   //Id
@@ -19,15 +19,21 @@ contract houseRelease{
   //总量
   string total;
 
-  /*function houseRelease() public{
-      //owner = msg.sender;
-      owner = 0x14723a09acff6d2a60dcdf7aa4aff308fddc160c;
-  }*/
 
+  constructor() public{
+    owner = msg.sender;
+  }
 
-  function createHouse(string _soymol,string _name,string _code,string _index,string _total) public{
+  function autoCreateHouse(string[][] houseInfo) public {
+    for(uint i=0;i<hoseInfo.length;i++){
+      string[] temp = hoseInfo[i];
+
+    }
+  }
+
+  function createHouse(string _symol,string _name,string _code,string _index,string _total) public{
     require(owner == msg.sender);
-      soymol = _soymol;
+      symol = _symol;
       name = _name;
       code = _code;
       index = _index;

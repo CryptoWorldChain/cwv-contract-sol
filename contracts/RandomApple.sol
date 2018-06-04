@@ -1,128 +1,152 @@
 pragma solidity ^0.4.22;
 
 contract RandomApple{
-
+uint256 seedTotal = 100000;
 uint256 seedNum = 1000;
 uint256 rand_seed = 249075560159305;
 
 uint256[] randomNum = new uint256[](1);
+
 address owner;
 address[] userAddrArray = new address[](1);
 
+uint256 multiplier = 25214903917;
+uint256 addend = 11;
+uint256 mask = 281474976710655;
+
+
+bool isExcuter = false;
+
+uint useNum = 100;
+uint256 withdrawalfPrice = 1;
 
 struct RandomUser{
     //address userAddr;
     string fingerprint;
     uint256 minergold;
     bool isUse;
+    bool isExist;
 }
 
 mapping(address => RandomUser) randomInfo;
-event newRandomNumber_uint(uint);
+event newRandomNumber_uint(uint256);
+event userInfo(address,string);
 constructor() public{
   owner = msg.sender;
+  deleteStrAt(0);
+  deleteUserAt(0);
 }
 
 
 function fingerprintInfo(string result) public {
-  require(!userAddrArray[msg.sender]);
+  require(!randomInfo[msg.sender].isExist,"");
+  require(!isExcuter,"");
   userAddrArray.push(msg.sender);
-  randomInfo[msg.sender] = RandomUser(result,0,false);
+  randomInfo[msg.sender] = RandomUser(result,0,false,true);
 }
 
-function computerRandomNumber(){
+function computerRandomNumber() public{
+  isExcuter = true;
   require(owner == msg.sender);
-  string userfingerprint;
-  for(uint i=0;i<100;i++){
-    address tempUserAddr = userAddrArray[i];
-    RandomUser tempUser = randomInfo[tempUserAddr];
+  require(userAddrArray.length > useNum);
 
-    userfingerprint = tempUser.fingerprint;
-    rand_seed = autoRandom(userfingerprint);
+  for(uint i=0;i<useNum;i++){
+    address tempUserAddr = userAddrArray[i];
+    RandomUser storage tempUser = randomInfo[tempUserAddr];
+
+    emit userInfo(tempUserAddr,tempUser.fingerprint);
+    string memory userfinger = tempUser.fingerprint;
+    rand_seed = autoRandom(userfinger);
+    emit newRandomNumber_uint(rand_seed);
 
     for(uint k=0;k<seedNum;k++){
-        randomNum[k] = autoRandomSeed();
+        randomNum.push(autoRandomSeed());
     }
-
   }
+  for(uint m=0;m<useNum;m++){
+      address delUserAddr = userAddrArray[m];
+
+      withdrawalfzunds(delUserAddr,withdrawalfPrice);
+      deleteUserAt(0);
+      delete randomInfo[delUserAddr];
+  }
+  isExcuter = false;
 
 
 }
-function getFixedRange(uint256 startNum,uint256 endNum) public returns (uint256){
-  uint numRand = randomNum[0];
-  delete(randomNum[0]);
-  randomNum.length--;
-
-  return numRand;
+function getFixedRange(uint256 maxNum) public returns (uint256){
+    require(randomNum.length>0,"");
+    uint256 numRand = randomNum[0];
+    rand_seed = numRand;
+    uint256 tempFix = nextInt(maxNum);
+    deleteStrAt(0);
+    return tempFix;
 }
 
-function nextInt(uint256 n) internal pure returns(uint256){
+function nextInt(uint256 n) public returns(uint256){
 
     require(n>0,"1");
 
     if ((n & -n) == n)  // i.e., n is a power of 2
-        return (uint256)((n * (uint256)next(31)) >> 31);
+        return uint256(((n * next(31)) >> 31));
 
-    int bits, val;
+    uint256 bits;
+    uint256 val;
     do {
         bits = next(31);
         val = bits % n;
     } while (bits - val + (n-1) < 0);
     return val;
 }
-uint256 multiplier = 25214903917;
-uint256 addend = 11;
-uint256 mask = 281474976710655;
-function next(int bits) internal pure returns (uint256) {
-    uint256 oldseed, nextseed;
-    
-    oldseed = rand_seed;
-    nextseed = (oldseed * multiplier + addend) & mask;
-    return (int)(nextseed >>> (48 - bits));
+
+function next(uint256 bits) public returns (uint256) {
+    uint256 nextseed;
+
+    nextseed = (rand_seed * multiplier + addend) & mask;
+    emit newRandomNumber_uint(nextseed);
+    return uint256(nextseed >> (48 - bits));
 }
 function getRandmon() public returns (uint256){
   uint numRand = randomNum[0];
-  delete(randomNum[0]);
-  randomNum.length--;
+  deleteStrAt(0);
   return numRand;
 }
-function initSeed(uint256 seed) internal pure returns (uint256){
-  return (seed ^  multiplier) & mask;
+
+function deleteStrAt(uint256 index) internal{
+    uint256 len = randomNum.length;
+    if (index >= len) return;
+    for (uint i = index; i<len-1; i++) {
+      randomNum[i] = randomNum[i+1];
+    }
+    delete randomNum[len-1];
+    randomNum.length--;
+}
+function deleteUserAt(uint256 index) internal{
+    uint256 len = userAddrArray.length;
+    if (index >= len) return;
+    for (uint i = index; i<len-1; i++) {
+      userAddrArray[i] = userAddrArray[i+1];
+    }
+
+    delete userAddrArray[len-1];
+    userAddrArray.length--;
 }
 
-
-function autoRandom(string _fingerprint) internal pure returns (uint){
+function autoRandom(string _fingerprint) public returns (uint256){
     uint256 randomNumber = uint256(sha256(_fingerprint));
     emit newRandomNumber_uint(randomNumber);
     return randomNumber;
 }
 
-function autoRandomSeed() internal pure returns(uint){
+function autoRandomSeed() public returns(uint256){
     rand_seed = rand_seed * 1103515245 + 12345;
     uint256 maxRange = 2**(8*7);
     uint256 randomNumber = rand_seed % maxRange;
+    emit newRandomNumber_uint(randomNumber);
     return randomNumber;
 }
 
 function withdrawalfzunds(address _addr,uint _price) public {
-    delete randomUser[_addr];
     _addr.transfer(_price);
 }
-
-//字符串连接
-function strConcat(string _a, string _b) internal pure returns (string){
-  bytes memory _ba = bytes(_a);
-  bytes memory _bb = bytes(_b);
-
-  string memory abcde = new string(_ba.length + _bb.length);
-  bytes memory babcde = bytes(abcde);
-  uint k = 0;
-  for (uint i = 0; i < _ba.length; i++) babcde[k++] = _ba[i];
-  for (i = 0; i < _bb.length; i++) babcde[k++] = _bb[i];
-
-  return string(babcde);
-}
-
-
-
 }
