@@ -33,9 +33,10 @@ contract Auction{
     function auctionBid(uint256 _bigPrice)  public payable{
       require(beneficiary != msg.sender);
       //现在时间小于竞拍开始时间
-      require(now > startTime,"");
+      require(now > startTime,"1");
       //现在时间大于竞拍结束时间
-      require(now < endTime,"");
+      require(now < endTime,"2");
+      require(highestBid < _bigPrice,"3");
       uint256 differencePrice;
       uint256 computerBidPrice;
       uint256 tempBidFrequency;
@@ -64,10 +65,11 @@ contract Auction{
         highestBid = _bigPrice;
         highestBidder = msg.sender;
       }
+
       //竞拍者的余额小于竞拍价
-      require(msg.sender.balance >= computerBidPrice,"1");
+      require(msg.sender.balance >= computerBidPrice,"4");
       //涨价的幅度小于既定额度
-      require(differencePrice >= increasePrice,"2");
+      require(differencePrice >= increasePrice,"5");
 
       pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
 
@@ -76,11 +78,11 @@ contract Auction{
 
 
     function auctionEnd() public payable{
-      require(msg.sender == beneficiary,"");
+      require(msg.sender == beneficiary,"6");
       //当前时间小于结束时间
-      require(now > endTime,"");
+      require(now > endTime,"7");
 
-      require(!ended,"");
+      require(!ended,"8");
       ended = true;
 
       uint256 len = auctionUser.length;
@@ -94,4 +96,10 @@ contract Auction{
       }
 
     }
+
+    function getMaxPrice() public view returns(uint256){
+        return highestBid;
+    }
+
+
 }
