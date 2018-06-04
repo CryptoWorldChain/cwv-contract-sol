@@ -4,8 +4,6 @@ contract Auction{
     bool ended = false;
     uint256 startTime;
     uint256 endTime;
-
-
     address beneficiary;
     address highestBidder;
     uint256 highestBid = 0;
