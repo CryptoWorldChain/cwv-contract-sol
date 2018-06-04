@@ -31,12 +31,12 @@ contract Auction{
 
     event test(uint256 num,address tempaddrs);
     function auctionBid(uint256 _bigPrice)  public payable{
-      require(beneficiary != msg.sender);
+      require(beneficiary != msg.sender,"1");
       //现在时间小于竞拍开始时间
-      require(now > startTime,"1");
+      require(now > startTime,"2");
       //现在时间大于竞拍结束时间
-      require(now < endTime,"2");
-      require(highestBid < _bigPrice,"3");
+      require(now < endTime,"3");
+      require(highestBid < _bigPrice,"4");
       uint256 differencePrice;
       uint256 computerBidPrice;
       uint256 tempBidFrequency;
@@ -67,9 +67,9 @@ contract Auction{
       }
 
       //竞拍者的余额小于竞拍价
-      require(msg.sender.balance >= computerBidPrice,"4");
+      require(msg.sender.balance >= computerBidPrice,"5");
       //涨价的幅度小于既定额度
-      require(differencePrice >= increasePrice,"5");
+      require(differencePrice >= increasePrice,"6");
 
       pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
 
@@ -78,11 +78,11 @@ contract Auction{
 
 
     function auctionEnd() public payable{
-      require(msg.sender == beneficiary,"6");
+      require(msg.sender == beneficiary,"7");
       //当前时间小于结束时间
-      require(now > endTime,"7");
+      require(now > endTime,"8");
 
-      require(!ended,"8");
+      require(!ended,"9");
       ended = true;
 
       uint256 len = auctionUser.length;
