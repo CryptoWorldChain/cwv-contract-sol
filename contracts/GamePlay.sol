@@ -1,12 +1,6 @@
 pragma solidity ^0.4.22;
 
-//import "./Random.sol";
-
-//import "./OraclizeI.sol";
 contract GamePlay {
-
-
-
   struct slice {
       uint _len;
       uint _ptr;
@@ -95,7 +89,7 @@ function addPool(uint256 _poolAmount) public payable{
   require(owner==msg.sender);
   pooladdr.transfer(_poolAmount);
 }
-
+event testString(string codestr);
 //设置开奖号码和开奖期号
 function setGamePeriod(string _winCode,string _period) public{
     //不是创建合约用户，不能设置开奖号码和开奖期号
@@ -103,14 +97,19 @@ function setGamePeriod(string _winCode,string _period) public{
 
     period = _period;
     winCode = _winCode;
-    var delim0 = toSlice("|");
-    var wagerdataArraystr = toSlice(_winCode);
-    var wagerdataArray = new string[](count(wagerdataArraystr,delim0) + 1);
+
+
+    slice memory delim0 = toSlice("|");
+    emit testString(toString(delim0));
+    slice memory wagerdataArraystr = toSlice(_winCode);
+    string[] memory wagerdataArray = new string[](count(wagerdataArraystr,delim0) + 1);
+
     for(uint aa=0;aa<wagerdataArray.length;aa++){
       wagerdataArray[aa] = toString(split(wagerdataArraystr,delim0));
     }
     winNumValue = WinNumValue(_period,wagerdataArray[0],wagerdataArray[1],
       wagerdataArray[2],wagerdataArray);
+     emit testString(winNumValue.winOne);
 }
 
 /*投注信息
@@ -133,17 +132,13 @@ function userBetting(string _strBet,string _period) public payable{
   //减去投注的金额
   msg.sender.transfer(-msg.value);
   //加入投注信息
-  var delim0 = toSlice("|");
-    var wagerdataArraystr = toSlice(_strBet);
-    var wagerdataArray = new string[](count(wagerdataArraystr,delim0) + 1);
-  //var delim0 = "|".toSlice();
-  //var wagerdataArraystr = _strBet.toSlice();
-  //var wagerdataArray = new string[](wagerdataArraystr.count(delim0) + 1);
-  for(uint aa=0;aa<wagerdataArray.length;aa++){
-
+  slice memory delim0 = toSlice("|");
+    slice memory wagerdataArraystr = toSlice(_strBet);
+    string[] memory wagerdataArray = new string[](count(wagerdataArraystr,delim0) + 1);
+    for(uint aa=0;aa<wagerdataArray.length;aa++){
       wagerdataArray[aa] = toString(split(wagerdataArraystr,delim0));
-   // wagerdataArray[aa] = wagerdataArraystr.split(delim0).toString();
-  }
+    }
+
   string[] memory tempArray = new string[](10);
   tempArray[0] = wagerdataArray[3];
   tempArray[1] = wagerdataArray[4];
@@ -155,7 +150,6 @@ function userBetting(string _strBet,string _period) public payable{
   tempArray[7] = wagerdataArray[10];
   tempArray[8] = wagerdataArray[11];
   tempArray[9] = wagerdataArray[12];
-  //userBettingInfo[msg.sender].push(userInfo(_period,_strBet,0,""));
   userBettingInfo[msg.sender].push(BettingValue(_period,wagerdataArray[0],wagerdataArray[1],
     wagerdataArray[2],wagerdataArray[4],wagerdataArray[5],tempArray,wagerdataArray[13],"0","0"));
 }
@@ -201,121 +195,7 @@ function computerPrize() public payable{
 
 function divisionMoney(string infoLevel) internal pure returns(string){
   string memory prizeMoney;
-  //普通投注
-  if(stringsEqual("1",infoLevel)){
-    prizeMoney = "888888";
-  }else if(stringsEqual("2",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("3",infoLevel)){
-    prizeMoney = "80000";
-  }else if(stringsEqual("4",infoLevel)){
-    prizeMoney = "10000";
-  }else if(stringsEqual("5",infoLevel)){
-    prizeMoney = "5000";
-  }else if(stringsEqual("6",infoLevel)){
-    prizeMoney = "250";
-  }else if(stringsEqual("7",infoLevel)){
-    prizeMoney = "50";
-  }else if(stringsEqual("8",infoLevel)){
-    prizeMoney = "10";
-  }else if(stringsEqual("9",infoLevel)){
-    prizeMoney = "5";
-  }else if(stringsEqual("10",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("11",infoLevel)){
-    prizeMoney = "40000";
-  }else if(stringsEqual("12",infoLevel)){
-    prizeMoney = "2000";
-  }else if(stringsEqual("13",infoLevel)){
-    prizeMoney = "500";
-  }else if(stringsEqual("14",infoLevel)){
-    prizeMoney = "100";
-  }else if(stringsEqual("15",infoLevel)){
-    prizeMoney = "20";
-  }else if(stringsEqual("16",infoLevel)){
-    prizeMoney = "10";
-  }else if(stringsEqual("17",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("18",infoLevel)){
-    prizeMoney = "20000";
-  }else if(stringsEqual("19",infoLevel)){
-    prizeMoney = "4500";
-  }else if(stringsEqual("20",infoLevel)){
-    prizeMoney = "40";
-  }else if(stringsEqual("21",infoLevel)){
-    prizeMoney = "25";
-  }else if(stringsEqual("22",infoLevel)){
-    prizeMoney = "10";
-  }else if(stringsEqual("23",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("24",infoLevel)){
-    prizeMoney = "10000";
-  }else if(stringsEqual("25",infoLevel)){
-    prizeMoney = "2000";
-  }else if(stringsEqual("26",infoLevel)){
-    prizeMoney = "100";
-  }else if(stringsEqual("27",infoLevel)){
-    prizeMoney = "10";
-  }else if(stringsEqual("28",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("29",infoLevel)){
-    prizeMoney = "500";
-  }else if(stringsEqual("30",infoLevel)){
-    prizeMoney = "30";
-  }else if(stringsEqual("31",infoLevel)){
-    prizeMoney = "8";
-  }else if(stringsEqual("32",infoLevel)){
-    prizeMoney = "3";
-  }else if(stringsEqual("33",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("34",infoLevel)){
-    prizeMoney = "350";
-  }else if(stringsEqual("35",infoLevel)){
-    prizeMoney = "20";
-  }else if(stringsEqual("36",infoLevel)){
-    prizeMoney = "5";
-  }else if(stringsEqual("37",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("38",infoLevel)){
-    prizeMoney = "160";
-  }else if(stringsEqual("39",infoLevel)){
-    prizeMoney = "10";
-  }else if(stringsEqual("40",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("41",infoLevel)){
-    prizeMoney = "55";
-  }else if(stringsEqual("42",infoLevel)){
-    prizeMoney = "2";
-  }else if(stringsEqual("43",infoLevel)){
-    prizeMoney = "10";
-  }
-
-
-  else if(stringsEqual("44",infoLevel)){
-    prizeMoney = "5000";
-  }else if(stringsEqual("45",infoLevel)){
-    prizeMoney = "700";
-  }else if(stringsEqual("46",infoLevel)){
-    prizeMoney = "90";
-  }else if(stringsEqual("47",infoLevel)){
-    prizeMoney = "";
-  }else if(stringsEqual("48",infoLevel)){
-    prizeMoney = "";
-  }else if(stringsEqual("49",infoLevel)){
-    prizeMoney = "";
-  }else if(stringsEqual("50",infoLevel)){
-    prizeMoney = "44";
-  }else if(stringsEqual("51",infoLevel)){
-    prizeMoney = "118";
-  }else if(stringsEqual("52",infoLevel)){
-    prizeMoney = "205";
-  }else if(stringsEqual("53",infoLevel)){
-    prizeMoney = "3";
-  }else if(stringsEqual("54",infoLevel)){
-    prizeMoney = "15";
-  }
-
-  else if(stringsEqual("55",infoLevel)){
+  if(stringsEqual("55",infoLevel)){
     prizeMoney = "44";
   }else if(stringsEqual("56",infoLevel)){
     prizeMoney = "12";
@@ -335,115 +215,7 @@ function divisionMoney(string infoLevel) internal pure returns(string){
 function divisionTransfer(string infoName) internal pure returns (string){
   string memory prizeLevel;
   //普通投注
-  if(stringsEqual("10_10",infoName)){
-    prizeLevel = "1";
-  }else if(stringsEqual("10_0",infoName)){
-    prizeLevel = "2";
-  }else if(stringsEqual("9_9",infoName)){
-    prizeLevel = "3";
-  }else if(stringsEqual("9_8",infoName)){
-    prizeLevel = "4";
-  }else if(stringsEqual("9_7",infoName)){
-    prizeLevel = "5";
-  }else if(stringsEqual("9_6",infoName)){
-    prizeLevel = "6";
-  }else if(stringsEqual("9_5",infoName)){
-    prizeLevel = "7";
-  }else if(stringsEqual("9_4",infoName)){
-    prizeLevel = "8";
-  }else if(stringsEqual("9_3",infoName)){
-    prizeLevel = "9";
-  }else if(stringsEqual("9_2",infoName)){
-    prizeLevel = "10";
-  }else if(stringsEqual("8_8",infoName)){
-    prizeLevel = "11";
-  }else if(stringsEqual("8_7",infoName)){
-    prizeLevel = "12";
-  }else if(stringsEqual("8_6",infoName)){
-    prizeLevel = "13";
-  }else if(stringsEqual("8_5",infoName)){
-    prizeLevel = "14";
-  }else if(stringsEqual("8_4",infoName)){
-    prizeLevel = "15";
-  }else if(stringsEqual("8_3",infoName)){
-    prizeLevel = "16";
-  }else if(stringsEqual("8_2",infoName)){
-    prizeLevel = "17";
-  }else if(stringsEqual("7_7",infoName)){
-    prizeLevel = "18";
-  }else if(stringsEqual("7_6",infoName)){
-    prizeLevel = "19";
-  }else if(stringsEqual("7_5",infoName)){
-    prizeLevel = "20";
-  }else if(stringsEqual("7_4",infoName)){
-    prizeLevel = "21";
-  }else if(stringsEqual("7_3",infoName)){
-    prizeLevel = "22";
-  }else if(stringsEqual("7_2",infoName)){
-    prizeLevel = "23";
-  }else if(stringsEqual("6_6",infoName)){
-    prizeLevel = "24";
-  }else if(stringsEqual("6_5",infoName)){
-    prizeLevel = "25";
-  }else if(stringsEqual("6_4",infoName)){
-    prizeLevel = "26";
-  }else if(stringsEqual("6_3",infoName)){
-    prizeLevel = "27";
-  }else if(stringsEqual("6_2",infoName)){
-    prizeLevel = "28";
-  }else if(stringsEqual("5_5",infoName)){
-    prizeLevel = "29";
-  }else if(stringsEqual("5_4",infoName)){
-    prizeLevel = "30";
-  }else if(stringsEqual("5_3",infoName)){
-    prizeLevel = "31";
-  }else if(stringsEqual("5_2",infoName)){
-    prizeLevel = "32";
-  }else if(stringsEqual("5_1",infoName)){
-    prizeLevel = "33";
-  }else if(stringsEqual("4_4",infoName)){
-    prizeLevel = "34";
-  }else if(stringsEqual("4_3",infoName)){
-    prizeLevel = "35";
-  }else if(stringsEqual("4_2",infoName)){
-    prizeLevel = "36";
-  }else if(stringsEqual("4_1",infoName)){
-    prizeLevel = "37";
-  }else if(stringsEqual("3_3",infoName)){
-    prizeLevel = "38";
-  }else if(stringsEqual("3_2",infoName)){
-    prizeLevel = "39";
-  }else if(stringsEqual("3_1",infoName)){
-    prizeLevel = "40";
-  }else if(stringsEqual("2_2",infoName)){
-    prizeLevel = "41";
-  }else if(stringsEqual("2_1",infoName)){
-    prizeLevel = "42";
-  }else if(stringsEqual("1_1",infoName)){
-    prizeLevel = "43";
-  }else if(stringsEqual("e_4_4",infoName)){
-    prizeLevel = "44";
-  }else if(stringsEqual("e_3_3",infoName)){
-    prizeLevel = "45";
-  }else if(stringsEqual("e_2_2",infoName)){
-    prizeLevel = "46";
-  }else if(stringsEqual("c_4_4",infoName)){
-    prizeLevel = "47";
-  }else if(stringsEqual("c_3_3",infoName)){
-    prizeLevel = "48";
-  }else if(stringsEqual("c_2_2",infoName)){
-    prizeLevel = "49";
-  }else if(stringsEqual("1_3_2",infoName)){
-    prizeLevel = "50";
-  }else if(stringsEqual("1_3_3",infoName)){
-    prizeLevel = "51";
-  }else if(stringsEqual("1_3_4",infoName)){
-    prizeLevel = "52";
-  }else if(stringsEqual("3_1_1",infoName)){
-    prizeLevel = "53";
-  }else if(stringsEqual("3_2_2",infoName)){
-    prizeLevel = "54";
-  }else if(stringsEqual("4_1_0",infoName)){
+  if(stringsEqual("4_1_0",infoName)){
     prizeLevel = "55";
   }else if(stringsEqual("5_1_0",infoName)){
     prizeLevel = "56";
@@ -453,50 +225,6 @@ function divisionTransfer(string infoName) internal pure returns (string){
     prizeLevel = "58";
   }else if(stringsEqual("6_2_0",infoName)){
     prizeLevel = "59";
-  }else if(stringsEqual("7_1_6",infoName)){
-    prizeLevel = "60";
-  }else if(stringsEqual("7_1_7",infoName)){
-    prizeLevel = "61";
-  }else if(stringsEqual("7_1_8",infoName)){
-    prizeLevel = "62";
-  }else if(stringsEqual("7_1_9",infoName)){
-    prizeLevel = "63";
-  }else if(stringsEqual("7_1_10",infoName)){
-    prizeLevel = "64";
-  }else if(stringsEqual("7_1_11",infoName)){
-    prizeLevel = "65";
-  }else if(stringsEqual("7_1_12",infoName)){
-    prizeLevel = "66";
-  }else if(stringsEqual("7_1_13",infoName)){
-    prizeLevel = "67";
-  }else if(stringsEqual("7_1_14",infoName)){
-    prizeLevel = "68";
-  }else if(stringsEqual("7_1_15",infoName)){
-    prizeLevel = "69";
-  }else if(stringsEqual("7_1_16",infoName)){
-    prizeLevel = "70";
-  }else if(stringsEqual("7_1_17",infoName)){
-    prizeLevel = "71";
-  }else if(stringsEqual("7_1_18",infoName)){
-    prizeLevel = "72";
-  }else if(stringsEqual("7_1_19",infoName)){
-    prizeLevel = "73";
-  }else if(stringsEqual("7_1_20",infoName)){
-    prizeLevel = "74";
-  }else if(stringsEqual("7_1_21",infoName)){
-    prizeLevel = "75";
-  }else if(stringsEqual("7_1_22",infoName)){
-    prizeLevel = "76";
-  }else if(stringsEqual("7_1_23",infoName)){
-    prizeLevel = "77";
-  }else if(stringsEqual("7_1_24",infoName)){
-    prizeLevel = "78";
-  }else if(stringsEqual("7_1_25",infoName)){
-    prizeLevel = "79";
-  }else if(stringsEqual("7_1_26",infoName)){
-    prizeLevel = "80";
-  }else if(stringsEqual("7_1_27",infoName)){
-    prizeLevel = "81";
   }
   return prizeLevel;
 }
