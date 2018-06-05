@@ -28,9 +28,6 @@ contract GamePlay {
     string money;//金额
   }
 
-
-//用户投注信息
-//mapping(address => userInfo[]) userBettingInfo;
 mapping(address => BettingValue[]) userBettingInfo;
 mapping(address => uint)  checkUser;
 //用户投注地址集合
@@ -60,7 +57,7 @@ bool isComputerPrize = false;
 //开奖号码存储
 WinNumValue winNumValue;
 //设置合约创建者
-function GamePlay() public{
+constructor() public{
   owner = msg.sender;
 }
 
@@ -100,7 +97,7 @@ function setGamePeriod(string _winCode,string _period) public{
 
 
     slice memory delim0 = toSlice("|");
-    emit testString(toString(delim0));
+
     slice memory wagerdataArraystr = toSlice(_winCode);
     string[] memory wagerdataArray = new string[](count(wagerdataArraystr,delim0) + 1);
 
@@ -109,7 +106,7 @@ function setGamePeriod(string _winCode,string _period) public{
     }
     winNumValue = WinNumValue(_period,wagerdataArray[0],wagerdataArray[1],
       wagerdataArray[2],wagerdataArray);
-     emit testString(winNumValue.winOne);
+
 }
 
 /*投注信息
@@ -158,7 +155,7 @@ function userBetting(string _strBet,string _period) public payable{
 function computerPrize() public payable{
 
   //false表示没有算过奖
-  require(isComputerPrize==false);
+  require(!isComputerPrize);
   //不是创建合约用户，不能算奖
   require(owner==msg.sender);
   require(now >= auctionEnd);
@@ -172,7 +169,7 @@ function computerPrize() public payable{
       uint256 award = 0;
       for(uint n=0;n<tempUser.length;n++){
           BettingValue memory tempUserInfo = tempUser[n];
-          string memory divisionType = calcPrizeLevelStruct(tempUserInfo,winNumValue);
+          string memory divisionType = calcPrizeLevelStruct(tempUserInfo);
           string memory prizeLevel = divisionTransfer(divisionType);
           string memory prizeMoney0 = divisionMoney(prizeLevel);
 
@@ -234,19 +231,11 @@ function divisionTransfer(string infoName) internal pure returns (string){
 计算奖等并返奖
 */
 
-function calcPrizeLevelStruct (BettingValue memory bettingValue,WinNumValue winNumValue) internal returns(string){
+function calcPrizeLevelStruct (BettingValue memory bettingValue) internal view returns(string){
 
-  // 根据中奖号码算奖 01|02|03|
-  //string memory winnumber = winCode;
+
   //玩法
   string memory bettypeArr = bettingValue.playtype;
-      //投注方式
-  //string memory chipintypeArr = bettingValue.chipintype;
-      //投注号码(多个以,分隔)
-  //string memory wagerDataArr = wagerdata;
-      //投注号码个数(多个以,分隔)
-  //string memory spotsArr = "";
-
   string memory divisionName0;
 
   //倍数在
@@ -258,21 +247,10 @@ function calcPrizeLevelStruct (BettingValue memory bettingValue,WinNumValue winN
     //divisionName0 = getDivisionName("", winnumber, bettypeArr, chipintypeArr);
     divisionName0 = getDivisionName(bettingValue);
   }
-
-
   return divisionName0;
 }
 
-
-
-/*
-计算是否中奖
-wagerdata		投注号码
-winnerNumber	中奖号码
-playtype		玩法
-chipintype		类型
-*/
-function getDivisionName(BettingValue bettingValue) internal returns (string){
+function getDivisionName(BettingValue bettingValue) internal view returns (string){
   string memory divisionName;
   if(stringsEqual("4",bettingValue.playtype)&&stringsEqual("1",bettingValue.chipintype)){
     //拖拉机投注
@@ -289,10 +267,8 @@ function getDivisionName(BettingValue bettingValue) internal returns (string){
 }
 
 
-function computer4And1(BettingValue bettingValue)  internal returns (string){
+function computer4And1(BettingValue bettingValue)  internal view returns (string){
   string memory divisionName4;
-  //string[] memory wagerdataArray = bettingValue.bettingArray;
-
   uint n1 = parseInt(winNumValue.winOne);
   uint n2 = parseInt(winNumValue.winTwo);
   uint n3 = parseInt(winNumValue.winThree);
@@ -302,11 +278,8 @@ function computer4And1(BettingValue bettingValue)  internal returns (string){
   }
   return divisionName4;
 }
-function computer5(BettingValue bettingValue)  internal returns (string){
+function computer5(BettingValue bettingValue)  internal view returns (string){
   string memory divisionName5;
-
-  //string[] memory wagerdataArray = bettingValue.bettingArray;
-
   uint n11 = parseInt(winNumValue.winOne);
   uint n21 = parseInt(winNumValue.winTwo);
   uint n31 = parseInt(winNumValue.winThree);
@@ -319,11 +292,8 @@ function computer5(BettingValue bettingValue)  internal returns (string){
   }
   return divisionName5;
 }
-function computer6(BettingValue bettingValue)  internal returns (string){
+function computer6(BettingValue bettingValue)  internal view returns (string){
   string memory divisionName6;
-
-  //string[] memory wagerdataArray = bettingValue.bettingArray;
-
   uint n12 = parseInt(winNumValue.winOne);
   uint n22 = parseInt(winNumValue.winTwo);
   uint n32 = parseInt(winNumValue.winThree);
@@ -340,10 +310,9 @@ function computer6(BettingValue bettingValue)  internal returns (string){
 
 
 
-  function nameLength(string name) internal pure returns (uint) {
-
-      return bytes(name).length;
-  }
+function nameLength(string name) internal pure returns (uint) {
+    return bytes(name).length;
+}
 //字符串转整数
 function parseInt(string _a) internal pure returns (uint) {
     return parseInt(_a, 0);
