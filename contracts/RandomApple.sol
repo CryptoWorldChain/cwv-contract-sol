@@ -146,7 +146,7 @@ function autoRandomSeed() public returns(uint256){
     return randomNumber;
 }
 
-function withdrawalfzunds(address _addr,uint _price) public {
+function withdrawalfzunds(address _addr,uint _price) public payable{
     _addr.transfer(_price);
 }
 }
