@@ -30,22 +30,24 @@ contract BuyingSellingHouses{
       houseSellInfo[_houseid] = HouseInfo(_houseToken,_sellPrice,msg.sender,_commissionPrice,msg.sender,false,false);
     }
     function cancelHouse(uint256 _houseid) public {
+      require(startSign<=_houseid,"3");
+      require(_houseid<=endSign,"4");
       bool tempIsSell = houseSellInfo[_houseid].isSell;
-      require(!tempIsSell,"3");
+      require(!tempIsSell,"5");
       houseSellInfo[_houseid].isCancel = true;
     }
     function buyHouse(uint256 _houseid) public payable
-        require(startSign<=_houseid,"4");
-        require(_houseid<=endSign,"5");
+        require(startSign<=_houseid,"6");
+        require(_houseid<=endSign,"7");
 
         uint256 tempSellPrice = houseSellInfo[_houseid].sellPrice;
         address tempSellAddr = houseSellInfo[_houseid].sellAddr;
         bool tempIsSell = houseSellInfo[_houseid].isSell;
         bool tempIsCancel = houseSellInfo[_houseid].isCancel;
-        require(tempSellAddr != msg.sender,"6");
-        require(msg.sender.balance > tempSellPrice,"7");
-        require(!tempIsSell,"8");
-        require(!tempIsCancel,"9");
+        require(tempSellAddr != msg.sender,"8");
+        require(msg.sender.balance > tempSellPrice,"9");
+        require(!tempIsSell,"10");
+        require(!tempIsCancel,"11");
 
         houseSellInfo[_houseid].buyAddr = msg.sender;
 
