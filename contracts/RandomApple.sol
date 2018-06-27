@@ -66,7 +66,7 @@ function computerRandomNumber() public{
   for(uint m=0;m<useNum;m++){
       address delUserAddr = userAddrArray[m];
 
-      withdrawalfzunds(delUserAddr,withdrawalfPrice);
+      //withdrawalfzunds(delUserAddr,withdrawalfPrice);
       deleteUserAt(0);
       delete randomInfo[delUserAddr];
   }
