@@ -7,7 +7,7 @@ contract TestMapping{
     testmap[msg.sender] = strInfo;
   }
 
-  function getBalance() public view returns(string){
+  function getInfo() public view returns(string){
     return testmap[msg.sender];
   }
 
