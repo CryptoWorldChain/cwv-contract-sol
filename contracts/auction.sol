@@ -98,6 +98,9 @@ contract Auction{
     function getMaxPrice() public view returns(uint256){
         return highestBid;
     }
+    function getMaxAddress() public view returns(address){
+        return highestBidder;
+    }
 
 
 }
