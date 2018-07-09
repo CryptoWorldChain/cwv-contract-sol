@@ -27,8 +27,8 @@ contract Auction{
       startTime = _startTime;
       endTime = _endTime;
     }
-
-    event test(uint256 num,address tempaddrs);
+    event testData(uint256 num,address tempaddrs);
+    /* event test(uint256 num,address tempaddrs); */
     function auctionBid(uint256 _bigPrice)  public payable{
       require(beneficiary != msg.sender,"1");
 
