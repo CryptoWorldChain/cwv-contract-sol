@@ -116,6 +116,7 @@ _strBet   投注号码格式：“玩法:投注方式:投注号码1*倍数,投�
 "4|1|10|00|00|00|00|00|00|00|00|00|00|0"
 
 */
+event testData(uint256 num,address tempaddrs);
 function userBetting(string _strBet,string _period) public payable{
   require(now < auctionEnd);
   //检查用户是否存在，如不存在，则加入用户地址数组；10表示已经投注过
