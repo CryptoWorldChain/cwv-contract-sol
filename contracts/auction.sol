@@ -10,6 +10,7 @@ contract Auction{
 
     uint256 bidStartingPrice;
     uint256 increasePrice;
+    string tokenID;
 
     struct AuctionInfo{
       uint256 bidPrice;
@@ -20,12 +21,13 @@ contract Auction{
     mapping(address => AuctionInfo) pendingReturns;
 
 
-    constructor(uint256 _startTime,uint256 _endTime,uint256 _bidStartingPrice,uint256 _increasePrice) public {
+    constructor(string _tokenID,uint256 _startTime,uint256 _endTime,uint256 _bidStartingPrice,uint256 _increasePrice) public {
       beneficiary = msg.sender;
       bidStartingPrice = _bidStartingPrice;
       increasePrice = _increasePrice;
       startTime = _startTime;
-      endTime = _endTime;
+      endTime = _endTime
+      tokenID = _tokenID
     }
     event testData(uint256 num,address tempaddrs);
     /* event test(uint256 num,address tempaddrs); */
@@ -100,6 +102,10 @@ contract Auction{
     }
     function getMaxAddress() public view returns(address){
         return highestBidder;
+    }
+
+    function getTokenID() public view returns(string){
+        return tokenID;
     }
 
 
