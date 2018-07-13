@@ -7,6 +7,8 @@ contract Auction{
     address beneficiary;
     address highestBidder;
     uint256 highestBid = 0;
+    uint256 blocklow;
+    uint256 blockMax;
 
     uint256 bidStartingPrice;
     uint256 increasePrice;
@@ -21,22 +23,26 @@ contract Auction{
     mapping(address => AuctionInfo) pendingReturns;
 
 
-    constructor(string _tokenID,uint256 _startTime,uint256 _endTime,uint256 _bidStartingPrice,uint256 _increasePrice) public {
+    constructor(string _tokenID,uint256 _startTime,
+      uint256 _endTime,uint256 _bidStartingPrice,uint256 _increasePrice,
+      uint256 _blocklow,uint256 _blockMax) public {
       beneficiary = msg.sender;
       bidStartingPrice = _bidStartingPrice;
       increasePrice = _increasePrice;
       startTime = _startTime;
-      endTime = _endTime
-      tokenID = _tokenID
+      endTime = _endTime;
+      tokenID = _tokenID;
+      blocklow = _blocklow;
+      blockMax = _blockMax;
     }
     event testData(uint256 num,address tempaddrs);
     /* event test(uint256 num,address tempaddrs); */
     function auctionBid(uint256 _bigPrice)  public payable{
       require(beneficiary != msg.sender,"1");
 
-      require(now > startTime,"2");
+      require(block.number > blocklow,"2");
 
-      require(now < endTime,"3");
+      require(block.number < blockMax,"3");
       require(highestBid < _bigPrice,"4");
       uint256 differencePrice;
       uint256 computerBidPrice;
@@ -61,26 +67,22 @@ contract Auction{
         tempBidFrequency = 1;
         auctionUser.push(msg.sender);
       }
-
-      if(highestBid < _bigPrice){
-        highestBid = _bigPrice;
-        highestBidder = msg.sender;
-      }
-
       require(msg.sender.balance >= computerBidPrice,"5");
 
       require(differencePrice >= increasePrice,"6");
 
+      highestBid = _bigPrice;
+      highestBidder = msg.sender;
+      beneficiary.transfer(computerBidPrice);
       pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
 
-      beneficiary.transfer(computerBidPrice);
     }
 
 
     function auctionEnd() public payable{
       require(msg.sender == beneficiary,"7");
 
-      require(now > endTime,"8");
+      require(block.number > blockMax,"8");
 
       require(!ended,"9");
       ended = true;
