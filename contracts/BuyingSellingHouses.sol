@@ -16,7 +16,7 @@ contract BuyingSellingHouses{
       bool isCancel;
     }
     mapping(uint256 => HouseInfo) houseSellInfo;
-
+    event testData(uint256 num,address tempaddrs);
     constructor(uint256 _startSign,uint256 _endSign) public{
       owner = msg.sender;
       startSign = _startSign;
