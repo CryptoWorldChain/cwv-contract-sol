@@ -9,6 +9,7 @@ contract Auction{
     uint256 highestBid = 0;
     uint256 blocklow;
     uint256 blockMax;
+    uint256 blockTime;
 
     uint256 bidStartingPrice;
     uint256 increasePrice;
@@ -32,8 +33,9 @@ contract Auction{
       startTime = _startTime;
       endTime = _endTime;
       tokenID = _tokenID;
+      blockTime = _blockTime;
       blocklow = block.number + 10;
-      blockMax = block.number + 30;
+      blockMax = block.number + 100;
       /* blocklow = _blocklow; */
       /* blockMax = _blockMax; */
     }
