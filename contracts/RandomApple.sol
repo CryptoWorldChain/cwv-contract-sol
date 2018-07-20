@@ -17,7 +17,7 @@ uint256 mask = 281474976710655;
 
 bool isExcuter = false;
 
-uint useNum = 100;
+uint useNum = 20;
 uint256 withdrawalfPrice = 1;
 
 struct RandomUser{
@@ -52,29 +52,39 @@ function getInfo() public view returns(string){
   return temp.fingerprint;
 }
 
+
 function computerRandomNumber() public{
   isExcuter = true;
   require(owner == msg.sender,"3");
-  require(userAddrArray.length > useNum,"4");
-
-  for(uint i=0;i<useNum;i++){
-    address tempUserAddr = userAddrArray[i];
-    RandomUser storage tempUser = randomInfo[tempUserAddr];
-
-    emit userInfo(tempUserAddr,tempUser.fingerprint);
-    string memory userfinger = tempUser.fingerprint;
-    rand_seed = autoRandom(userfinger);
-    emit newRandomNumber_uint(rand_seed);
-
-    for(uint k=0;k<seedNum;k++){
-        randomNum.push(autoRandomSeed());
+  if(randomNum.length==0 && userAddrArray.length < useNum){
+      rand_seed = autoRandom("cwv");
+      for(uint l=0;l<seedNum;l++){
+        uint256 templ = autoRandomSeed();
+        emit newRandomNumber_uint(templ);
+        randomNum.push(templ);
     }
-  }
-  for(uint m=0;m<useNum;m++){
-      address delUserAddr = userAddrArray[m];
-      //withdrawalfzunds(delUserAddr,withdrawalfPrice);
-      deleteUserAt(0);
-      delete randomInfo[delUserAddr];
+  }else{
+    require(userAddrArray.length >= useNum,"4");
+
+    for(uint i=0;i<useNum;i++){
+      address tempUserAddr = userAddrArray[i];
+      RandomUser storage tempUser = randomInfo[tempUserAddr];
+
+      emit userInfo(tempUserAddr,tempUser.fingerprint);
+      string memory userfinger = tempUser.fingerprint;
+      rand_seed = autoRandom(userfinger);
+      emit newRandomNumber_uint(rand_seed);
+
+      for(uint k=0;k<seedNum;k++){
+          randomNum.push(autoRandomSeed());
+      }
+    }
+    for(uint m=0;m<useNum;m++){
+        address delUserAddr = userAddrArray[m];
+        //withdrawalfzunds(delUserAddr,withdrawalfPrice);
+        deleteUserAt(0);
+        delete randomInfo[delUserAddr];
+    }
   }
   isExcuter = false;
 
