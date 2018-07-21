@@ -34,7 +34,7 @@ contract Auction{
       endTime = _endTime;
       tokenID = _tokenID;
       blockTime = _blockTime;
-      blocklow = block.number + 10;
+      blocklow = block.number + 100;
       blockMax = block.number + 100;
       /* blocklow = _blocklow; */
       /* blockMax = _blockMax; */
