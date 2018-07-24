@@ -2,7 +2,7 @@ pragma solidity ^0.4.22;
 
 contract RandomApple{
 uint256 seedTotal = 100000;
-uint256 seedNum = 1000;
+uint256 seedNum = 5000;
 uint256 rand_seed = 249075560159305;
 
 uint256[] randomNum = new uint256[](1);
@@ -51,7 +51,6 @@ function getInfo() public view returns(string){
   RandomUser memory temp = randomInfo[msg.sender];
   return temp.fingerprint;
 }
-
 
 function computerRandomNumber() public{
   isExcuter = true;
