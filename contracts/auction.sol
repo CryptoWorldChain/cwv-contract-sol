@@ -88,8 +88,7 @@ contract Auction{
 
       highestBid = _bigPrice;
       highestBidder = msg.sender;
-      emit testData(computerBidPrice,msg.sender);
-
+      
       beneficiary.transfer(computerBidPrice);
 
     }
