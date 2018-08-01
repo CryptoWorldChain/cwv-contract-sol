@@ -19,7 +19,6 @@ contract HouseRelease{
   //总量
   string total;
 
-
   constructor() public{
     owner = msg.sender;
   }
