@@ -60,7 +60,7 @@ WinNumValue winNumValue;
 constructor() public{
   owner = msg.sender;
 }
-//设置地址信息
+
 /*
 _pooladdr 奖池地址，存储初始值，及追加奖池金额
 _saleaddr 销售金额存储地址
