@@ -50,7 +50,7 @@ contract Auction{
       }
     }
     event testData(uint256 num,address tempaddrs);
-    /* event test(uint256 num,address tempaddrs); */
+  
     function auctionBid(uint256 _bigPrice)  public payable{
       require(beneficiary != msg.sender,"1");
 
@@ -88,7 +88,7 @@ contract Auction{
 
       highestBid = _bigPrice;
       highestBidder = msg.sender;
-      
+
       beneficiary.transfer(computerBidPrice);
 
     }

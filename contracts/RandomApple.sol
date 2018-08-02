@@ -86,8 +86,6 @@ function computerRandomNumber() public{
     }
   }
   isExcuter = false;
-
-
 }
 function getFixedRange(uint256 maxNum) public returns (uint256){
     require(randomNum.length>0,"5");
