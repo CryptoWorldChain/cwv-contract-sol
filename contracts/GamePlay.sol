@@ -93,7 +93,6 @@ function setGamePeriod(string _winCode,string _period) public{
     period = _period;
     winCode = _winCode;
 
-
     slice memory delim0 = toSlice("|");
 
     slice memory wagerdataArraystr = toSlice(_winCode);
