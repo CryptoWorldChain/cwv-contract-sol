@@ -39,57 +39,62 @@ contract Auction{
       tokenID = _tokenID;
       blockTime = _blockTime;
       if(startTime <endTime && startTime > currentTime && endTime > currentTime){
-          uint256 tempStart = startTime - currentTime;
+          /* uint256 tempStart = startTime - currentTime; */
           uint256 tempEnd = endTime - currentTime;
 
-          uint256 tempStartNum = tempStart/blockTime;
+          //uint256 tempStartNum = tempStart/blockTime;
           uint256 tempEndNum = tempEnd/blockTime;
 
-          blocklow = currentBlockNum + tempStartNum;
+          blocklow = currentBlockNum ;
+          /* blocklow = currentBlockNum + tempStartNum; */
           blockMax = currentBlockNum + tempEndNum;
       }
     }
     event testData(uint256 num,address tempaddrs);
-  
-    function auctionBid(uint256 _bigPrice)  public payable{
-      require(beneficiary != msg.sender,"1");
+
+      function auctionBid(uint256 _bigPrice)  public payable{
+      /* require(beneficiary != msg.sender,"1");
 
       require(block.number > blocklow,"2");
 
       require(block.number < blockMax,"3");
-      require(highestBid < _bigPrice,"4");
-      uint256 differencePrice;
-      uint256 computerBidPrice;
-      uint256 tempBidFrequency;
+      require(highestBid < _bigPrice,"4"); */
 
-      if(pendingReturns[msg.sender].isExist){
-        AuctionInfo storage auctionInfo = pendingReturns[msg.sender];
-        uint256 tempbidPrice = auctionInfo.bidPrice;
-        differencePrice = _bigPrice - tempbidPrice;
+      if(beneficiary != msg.sender && block.number >= blocklow
+        && block.number <= blockMax && highestBid < _bigPrice){
+          uint256 differencePrice;
+          uint256 computerBidPrice;
+          uint256 tempBidFrequency;
 
-        computerBidPrice = differencePrice;
+          if(pendingReturns[msg.sender].isExist){
+            AuctionInfo storage auctionInfo = pendingReturns[msg.sender];
+            uint256 tempbidPrice = auctionInfo.bidPrice;
+            differencePrice = _bigPrice - tempbidPrice;
 
-        tempBidFrequency = auctionInfo.bidFrequency;
-        tempBidFrequency = tempBidFrequency + 1;
+            computerBidPrice = differencePrice;
 
-        pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
-      }else{
-        computerBidPrice = _bigPrice;
+            tempBidFrequency = auctionInfo.bidFrequency;
+            tempBidFrequency = tempBidFrequency + 1;
 
-        differencePrice = _bigPrice - highestBid;
+            pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
+          }else{
+            computerBidPrice = _bigPrice;
 
-        tempBidFrequency = 1;
-        pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
-        auctionUser.push(msg.sender);
+            differencePrice = _bigPrice - highestBid;
+
+            tempBidFrequency = 1;
+            pendingReturns[msg.sender] = AuctionInfo(_bigPrice,tempBidFrequency,true);
+            auctionUser.push(msg.sender);
+          }
+          /* require(msg.sender.balance >= computerBidPrice,"5");
+
+          require(differencePrice >= increasePrice,"6"); */
+
+          highestBid = _bigPrice;
+          highestBidder = msg.sender;
+
+          beneficiary.transfer(computerBidPrice);
       }
-      require(msg.sender.balance >= computerBidPrice,"5");
-
-      require(differencePrice >= increasePrice,"6");
-
-      highestBid = _bigPrice;
-      highestBidder = msg.sender;
-
-      beneficiary.transfer(computerBidPrice);
 
     }
 
