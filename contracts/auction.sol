@@ -124,7 +124,7 @@ contract Auction{
     }
 
 
-    function auctionEnd() public payable returns(string){
+    function auctionEnd() public payable returns(uint256){
     //   require(msg.sender == beneficiary,"7");
 
     //   require(block.number > blockMax,"8");
@@ -132,6 +132,7 @@ contract Auction{
     //   require(!ended,"9");
       if(msg.sender == beneficiary){
           if(block.number > blockMax){
+            if(!ended){
               ended = true;
 
               uint256 len = auctionUser.length;
@@ -143,12 +144,15 @@ contract Auction{
                     tempUserAddr.transfer(tempPrice);
                   }
               }
-              return "0";
+              return 0;
+            }else{
+              return 9;
+            }
           }else{
-            return "8";
+            return 8;
           }
       }else{
-          return "7";
+          return 7;
       }
 
     }
