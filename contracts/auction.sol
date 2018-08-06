@@ -30,7 +30,7 @@ contract Auction{
       uint256 _endTime,uint256 _blockTime,uint256 _bidStartingPrice,
       uint256 _increasePrice) public {
       beneficiary = msg.sender;
-      currentTime = now*1000;
+      currentTime = now;
       currentBlockNum = block.number;
       bidStartingPrice = _bidStartingPrice;
       increasePrice = _increasePrice;
@@ -39,7 +39,11 @@ contract Auction{
       tokenID = _tokenID;
       blockTime = _blockTime;
       if(startTime <endTime){
-          uint256 tempStart = startTime - currentTime;
+          uint256 tempStart = 0;
+          if(startTime>currentTime){
+            tempStart = startTime - currentTime;
+          }
+
           uint256 tempEnd = endTime - currentTime;
 
           uint256 tempStartNum = tempStart/blockTime;
@@ -51,7 +55,7 @@ contract Auction{
     }
     event testData(uint256 num,address tempaddrs);
 
-      function auctionBid(uint256 _bigPrice)  public payable returns(string){
+      function auctionBid(uint256 _bigPrice)  public payable returns(uint256){
       /* require(beneficiary != msg.sender,"1");
 
       require(block.number > blocklow,"2");
@@ -97,24 +101,24 @@ contract Auction{
 
                       beneficiary.transfer(computerBidPrice);
 
-                      return "0";
+                      return 0;
                     }else{
-                        return "6";
+                        return 6;
                     }
                   }else{
-                      return "5";
+                      return 5;
                   }
                 }else{
-                    return "4";
+                    return 4;
                 }
             }else{
-                return "3";
+                return 3;
             }
         }else{
-            return "2";
+            return 2;
         }
       }else{
-          return "1";
+          return 1;
       }
 
     }
@@ -171,6 +175,16 @@ contract Auction{
     function getblocklow() public view returns(uint256){
         return blocklow;
     }
+    function getcurrentTime() public view returns(uint256){
+        return currentTime;
+    }
+    function getstartTime() public view returns(uint256){
+        return startTime;
+    }
+    function getendTime() public view returns(uint256){
+        return endTime;
+    }
+
 
 
     function getTokenID() public view returns(string){
