@@ -55,7 +55,7 @@ contract Auction{
     }
     event testData(uint256 num,address tempaddrs);
 
-      function auctionBid(uint256 _bigPrice)  public payable returns(string){
+      function auctionBid(uint256 _bigPrice)  public payable returns(uint256){
       /* require(beneficiary != msg.sender,"1");
 
       require(block.number > blocklow,"2");
@@ -101,24 +101,24 @@ contract Auction{
 
                       beneficiary.transfer(computerBidPrice);
 
-                      return "0";
+                      return 0;
                     }else{
-                        return "6";
+                        return 6;
                     }
                   }else{
-                      return "5";
+                      return 5;
                   }
                 }else{
-                    return "4";
+                    return 4;
                 }
             }else{
-                return "3";
+                return 3;
             }
         }else{
-            return "2";
+            return 2;
         }
       }else{
-          return "1";
+          return 1;
       }
 
     }
