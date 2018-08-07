@@ -188,9 +188,6 @@ contract Auction{
     function getendTime() public view returns(uint256){
         return endTime;
     }
-
-
-
     function getTokenID() public view returns(string){
         return tokenID;
     }
