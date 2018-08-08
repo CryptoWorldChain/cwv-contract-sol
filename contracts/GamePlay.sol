@@ -186,8 +186,6 @@ function computerPrize() public payable{
   isComputerPrize = true;
 }
 
-
-
 function divisionMoney(string infoLevel) internal pure returns(string){
   string memory prizeMoney;
   if(stringsEqual("55",infoLevel)){
@@ -223,8 +221,6 @@ function divisionTransfer(string infoName) internal pure returns (string){
   }
   return prizeLevel;
 }
-
-
 /*
 计算奖等并返奖
 */
@@ -263,7 +259,6 @@ function getDivisionName(BettingValue bettingValue) internal view returns (strin
   return divisionName;
 
 }
-
 
 function computer4And1(BettingValue bettingValue)  internal view returns (string){
   string memory divisionName4;
