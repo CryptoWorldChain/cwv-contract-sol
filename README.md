@@ -1,6 +1,16 @@
 # 合约返回状态
 ## 随机数  RandomApple.sol
-
+    fingerprintInfo:收集指纹
+    已收集过指纹--1
+    正在生成随机数--2
+    成功收集指纹--0
+    computerRandomNumber:生成随机数
+    不是合约创建者--3
+    现有的用户指纹数过低，不能生成随机数--4
+    成功生成随机数--0
+    getFixedRange:生成固定范围的随机数
+    生成失败--0
+    
 ## 发布房产 HouseRelease.sol
 
 
