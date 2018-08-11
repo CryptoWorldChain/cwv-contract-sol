@@ -53,16 +53,19 @@ contract Auction{
           blockMax = currentBlockNum + tempEndNum;
       }
     }
+    string tempstr;
+    /* string str2; */
     event testData(uint256 num,address tempaddrs);
 
-      function auctionBid(uint256 _bigPrice)  public payable returns(uint256){
+      function auctionBid(uint256 _bigPrice,string _tempstr)  public payable returns(uint256){
       /* require(beneficiary != msg.sender,"1");
 
       require(block.number >= blocklow,"2");
 
       require(block.number <= blockMax,"3");
       require(highestBid < _bigPrice,"4"); */
-
+      tempstr = _tempstr;
+      /* str2 = _str2; */
       if(beneficiary != msg.sender){
         if(block.number >= blocklow){
             if(block.number <= blockMax){
@@ -157,7 +160,7 @@ contract Auction{
       }
 
     }
-    
+
 
     function getMaxPrice() public view returns(uint256){
         return highestBid;
