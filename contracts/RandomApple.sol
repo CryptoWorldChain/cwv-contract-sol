@@ -69,7 +69,7 @@ function computerRandomNumber() public returns (uint256){
         rand_seed = autoRandom("cwv");
         for(uint l=0;l<seedNum;l++){
           uint256 templ = autoRandomSeed();
-          emit newRandomNumber_uint(templ);
+          /* emit newRandomNumber_uint(templ); */
           randomNum.push(templ);
       }
     }else{
@@ -79,10 +79,10 @@ function computerRandomNumber() public returns (uint256){
           address tempUserAddr = userAddrArray[i];
           RandomUser storage tempUser = randomInfo[tempUserAddr];
 
-          emit userInfo(tempUserAddr,tempUser.fingerprint);
+          /* emit userInfo(tempUserAddr,tempUser.fingerprint); */
           string memory userfinger = tempUser.fingerprint;
           rand_seed = autoRandom(userfinger);
-          emit newRandomNumber_uint(rand_seed);
+          /* emit newRandomNumber_uint(rand_seed); */
 
           for(uint k=0;k<seedNum;k++){
               randomNum.push(autoRandomSeed());
@@ -106,6 +106,9 @@ function computerRandomNumber() public returns (uint256){
 }
 function getFixedRange(uint256 maxNum) public returns (uint256){
     /* require(randomNum.length>0,"5"); */
+    if(randomNum.length==0){
+      computerRandomNumber();
+    }
     if(randomNum.length>0){
       uint256 numRand = randomNum[0];
       rand_seed = numRand;
@@ -117,7 +120,7 @@ function getFixedRange(uint256 maxNum) public returns (uint256){
     }
 }
 
-function nextInt(uint256 n) public returns(uint256){
+function nextInt(uint256 n) public view returns(uint256){
 
     /* require(n>0,"6"); */
     if(n>0){
@@ -136,14 +139,17 @@ function nextInt(uint256 n) public returns(uint256){
     }
 }
 
-function next(uint256 bits) public returns (uint256) {
+function next(uint256 bits) public view returns (uint256) {
     uint256 nextseed;
 
     nextseed = (rand_seed * multiplier + addend) & mask;
-    emit newRandomNumber_uint(nextseed);
+    /* emit newRandomNumber_uint(nextseed); */
     return uint256(nextseed >> (48 - bits));
 }
 function getRandmon() public returns (uint256){
+  if(randomNum.length==0){
+    computerRandomNumber();
+  }
   uint numRand = randomNum[0];
   deleteStrAt(0);
   return numRand;
@@ -169,9 +175,9 @@ function deleteUserAt(uint256 index) internal{
     userAddrArray.length--;
 }
 
-function autoRandom(string _fingerprint) public returns (uint256){
+function autoRandom(string _fingerprint) public pure returns (uint256){
     uint256 randomNumber = uint256(sha256(_fingerprint));
-    emit newRandomNumber_uint(randomNumber);
+    /* emit newRandomNumber_uint(randomNumber); */
     return randomNumber;
 }
 
@@ -179,7 +185,7 @@ function autoRandomSeed() public returns(uint256){
     rand_seed = rand_seed * 1103515245 + 12345;
     uint256 maxRange = 2**(8*7);
     uint256 randomNumber = rand_seed % maxRange;
-    emit newRandomNumber_uint(randomNumber);
+    // emit newRandomNumber_uint(randomNumber);
     return randomNumber;
 }
 
