@@ -29,8 +29,8 @@ struct RandomUser{
 }
 
 mapping(address => RandomUser) randomInfo;
-event newRandomNumber_uint(uint256);
-event userInfo(address,string);
+/* event newRandomNumber_uint(uint256);
+event userInfo(address,string); */
 constructor() public{
   owner = msg.sender;
   deleteStrAt(0);
