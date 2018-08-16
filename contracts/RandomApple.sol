@@ -68,7 +68,6 @@ function computerRandomNumber() public returns (uint256){
         rand_seed = autoRandom("cwv");
         for(uint l=0;l<seedNum;l++){
           uint256 templ = autoRandomSeed();
-          /* emit newRandomNumber_uint(templ); */
           randomNum.push(templ);
       }
     }else{
