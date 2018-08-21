@@ -64,7 +64,7 @@ function computerRandomNumber() public returns (uint256){
   isExcuter = true;
   /* require(owner == msg.sender,"3"); */
   if(owner == msg.sender){
-    if(randomNum.length==0 && userAddrArray.length < useNum){
+    if(randomNum.length==0 || userAddrArray.length < useNum){
         rand_seed = autoRandom("cwv");
         for(uint l=0;l<seedNum;l++){
           uint256 templ = autoRandomSeed();
